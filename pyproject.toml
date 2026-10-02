@@ -1,0 +1,17 @@
+[project]
+name = "auto-transcribe"
+version = "0.1.0"
+description = "Drop-folder transcription for Apple Silicon Macs using MLX Whisper"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["mlx-whisper"]
+
+[project.scripts]
+autotranscribe = "autotranscribe.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/autotranscribe"]
