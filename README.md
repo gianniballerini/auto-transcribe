@@ -1,31 +1,57 @@
 # auto-transcribe
 
-Drop any audio or video file into `~/Transcriptions` and it is transcribed automatically, on your Mac, with no cloud service.
+**Drop a file in a folder. Get a transcript. Nothing leaves your Mac.**
+
+![macOS](https://img.shields.io/badge/macOS-Apple%20Silicon-000?logo=apple)
+![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)
+![Whisper](https://img.shields.io/badge/Whisper-large--v3--turbo-412991)
+![Offline](https://img.shields.io/badge/runs-100%25%20offline-2ea44f)
+
+Voice notes, meetings, interviews, screen recordings: drag them into `~/Transcriptions` and a background job turns them into a clean transcript and `.srt` subtitles using Whisper running locally on Apple Silicon (MLX). No app to open, no upload, no API key, no subscription.
+
+<!-- TODO: add demo GIF here: drag a file into the folder, menu bar shows progress, open the .txt -->
+
+```
+~/Transcriptions/
+├── meeting.m4a            ← you drop this
+├── output/
+│   ├── meeting.txt        ← one phrase per line
+│   └── meeting.srt        ← ready for any video player or editor
+└── processed/meeting.m4a  ← original, moved out of the way
+```
+
+## Why
+
+- **Private**: audio is processed on your machine. Nothing is uploaded.
+- **Fast**: a 32 s voice note is done in ~10 s on an M2 Pro, model load included.
+- **Zero friction**: no window, no button. Drop a file and walk away. It also picks up files dropped while your Mac was off.
+- **Any format**: if ffmpeg can read it (`.mp3 .m4a .ogg .wav .mp4 .mov` and more), it gets transcribed.
+- **Readable output**: phrases are split at sentence ends and pauses, not at arbitrary 30 s chunks.
+- **~100 languages**, auto-detected.
+- **Menu bar status** (optional): shows the current file, elapsed time and last result.
+
+## Quick start
+
+Needs an Apple Silicon Mac (M1 or newer), [Homebrew](https://brew.sh), and ~2 GB of disk for the model.
+
+```sh
+brew install ffmpeg uv
+uv tool install git+https://github.com/gianniballerini/auto-transcribe.git
+autotranscribe setup
+```
+
+That's it. Drop a file into `~/Transcriptions`. The first run downloads the Whisper model (~1.5 GB), so it takes a few minutes longer.
+
+`setup` creates `~/Transcriptions`, installs a background job that starts at login, and installs the menu bar plugin.
 
 | Result | Location |
 | --- | --- |
 | Transcript, one phrase per line | `~/Transcriptions/output/<name>.txt` |
-| Closed captions | `~/Transcriptions/output/<name>.srt` |
+| Subtitles | `~/Transcriptions/output/<name>.srt` |
 | Original file, after success | `~/Transcriptions/processed/` |
 | Original file + error log, after failure | `~/Transcriptions/failed/` |
 
-Language is auto-detected. No speaker recognition.
-
-## Requirements
-
-- Apple Silicon Mac (M1 or newer)
-- [Homebrew](https://brew.sh)
-- About 2 GB free disk for the Whisper model, which downloads on the first transcription
-
-## Install
-
-```sh
-brew install ffmpeg uv
-uv tool install git+ssh://git@github.com/gianniballerini/auto-transcribe.git
-autotranscribe setup
-```
-
-`setup` creates `~/Transcriptions`, installs a background job that starts at login, and installs the menu bar plugin.
+No speaker recognition (yet).
 
 Optional menu bar status (file name, elapsed time, last result):
 
